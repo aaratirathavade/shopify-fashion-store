@@ -1,0 +1,7 @@
+{% assign badge = product.metafields.custom.product_badge.value %}
+
+{% if badge != blank %}
+  <div class="custom-product-badge">
+    {{ badge }}
+  </div>
+{% endif %}
