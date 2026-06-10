@@ -22,7 +22,7 @@
   {% form 'product', product %}
     {% assign current_variant = product.selected_or_first_available_variant %}
 
-    <select name="id">
+    <select name="id" id="variant-id">
       {% for variant in product.variants %}
         <option
           value="{{ variant.id }}"
@@ -35,12 +35,60 @@
       {% endfor %}
     </select>
 
-    <input type="text" name="quantity" min="1" value="1">
+    <input type="number" id="quantity" name="quantity" min="1" value="1">
 
-    <input type="submit" value="Add to cart">
+    <button type="button" id="ajax-add-to-cart">
+      Add to Cart (AJAX)
+    </button>
+    <div id="cart-message"></div>
     {{ form | payment_button }}
   {% endform %}
 </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const button = document.getElementById('ajax-add-to-cart');
+
+  button.addEventListener('click', async () => {
+
+    const variantId = document.getElementById('variant-id').value;
+    const quantity = document.getElementById('quantity').value;
+
+    try {
+
+      const response = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: variantId,
+          quantity: Number(quantity)
+        })
+      });
+
+      const data = await response.json();
+
+      document.getElementById('cart-message').innerHTML =
+        `${data.title} added to cart successfully`;
+
+      console.log(data);
+
+    } catch (error) {
+
+      console.error(error);
+
+      document.getElementById('cart-message').innerHTML =
+        'Something went wrong';
+
+    }
+
+  });
+
+});
+</script>
 
 {% schema %}
 {
