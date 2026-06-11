@@ -74,6 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('cart-message').innerHTML =
         `${data.title} added to cart successfully`;
 
+const cartResponse = await fetch('/cart.js');
+
+const cart = await cartResponse.json();
+
+document.getElementById('cart-count').textContent =
+cart.item_count;
+
       console.log(data);
 
     } catch (error) {
